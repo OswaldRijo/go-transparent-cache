@@ -45,6 +45,7 @@ be concurrent and not parallel.
 
 
 ## Run the solution Tests⚙️
+
 Open a terminal and navigate to the pkg folder with command:
 ```
 cd pkg
@@ -58,6 +59,7 @@ The command above will print all the results of every test in the tests case
 
 
 ### Installing and Deploying Example Server App (Ubuntu)
+
 In root folder directory is a file named as "script.sh" that is intended to run in Ubuntu machine. This script will set up everything that server app needs. 
 For running the script, first it's needed to set the script as executable, hence open a terminal and runs the command 
 in project root folder.
@@ -71,7 +73,10 @@ sudo ./script.sh
 finally, wait for the script finishes and voilá! the server app will be running on port 8080 (make sure you have this port 
 available)
 
+
+
 ##Installation and Deploying Example Server App (NO Ubuntu dist)
+
 The "main.go" file located in root directory is in charge of starting the server, the next command will build the app, so
 open a terminal and execute:
 ```
@@ -84,6 +89,8 @@ After that, execute the file that the command above generates in root directory 
 ```
 
 and that's it!
+
+
 
 ##Collection to make Requests to the server
 
