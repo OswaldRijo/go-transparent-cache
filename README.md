@@ -55,7 +55,7 @@ After that, run in the terminal:
 go test -v
 ```
 
-The command above will print all the results of every test in the tests case
+The command above will print all the results of every test in the tests case.
 
 
 ## Installing and Deploying Example Server App (Ubuntu)
@@ -71,7 +71,8 @@ then to execute the installation script run the following command:
 sudo ./script.sh
 ```
 finally, wait for the script finishes and voilá! the server app will be running on port 8080 (make sure you have this port 
-available)
+available).
+
 
 ##Installation and Deploying Example Server App (NO Ubuntu dist)
 
@@ -86,14 +87,14 @@ After that, execute the file that the command above generates in root directory 
 ./Golang-challenge
 ```
 
-and that's it!
-
+and that's it!.
 
 
 ##Collection to make Requests to the server
 
 Import "Server.postman_collection.json" file in postman to get ready and start to make requests to the server.
 
+
 ## Third party
 
-* [Mux](https://github.com/gorilla/mux/) - Library to build http servers
+* [Mux](https://github.com/gorilla/mux/) - Library to build http servers.
