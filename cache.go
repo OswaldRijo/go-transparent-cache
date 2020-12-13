@@ -1,9 +1,9 @@
 package sample1
 
 import (
+	"fmt"
 	"sync"
 	"time"
-	"fmt"
 )
 
 
@@ -56,7 +56,11 @@ func (c *TransparentCache) parallelizeSearch( itemCodes *[]string, results *[]fl
 	for i < qtyProcess{
 		select {
 		case priceStr = <-c.priceChannel:
-			*results = append(*results, priceStr.price)
+			if priceStr.err == nil {
+				*results = append(*results, priceStr.price)
+			}else if *e == nil {
+				*e = priceStr.err
+			}
 			i++
 		}
 	}

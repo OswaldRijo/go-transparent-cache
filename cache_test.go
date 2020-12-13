@@ -1,10 +1,10 @@
 package sample1
 
 import (
-	"testing"
-	"time"
 	"fmt"
 	"sort"
+	"testing"
+	"time"
 )
 
 // mockResult has the float64 and err to return
@@ -47,6 +47,14 @@ func getPricesWithNoErr(t *testing.T, cache *TransparentCache, itemCodes ...stri
 	prices, err := cache.GetPricesFor(itemCodes...)
 	if err != nil {
 		t.Error("error getting prices for", itemCodes)
+	}
+	return prices
+}
+
+func getPricesWithErr(t *testing.T, cache *TransparentCache, itemCodes ...string) []float64 {
+	prices, err := cache.GetPricesFor(itemCodes...)
+	if err == nil {
+		t.Error("error expected", itemCodes)
 	}
 	return prices
 }
@@ -116,6 +124,7 @@ func TestGetPricesFor_GetsSeveralPricesAtOnceAndCachesThem(t *testing.T) {
 	}
 	cache := NewTransparentCache(mockService, time.Minute)
 	assertFloat(t, 5, getPriceWithNoErr(t, cache, "p1"), "wrong price returned")
+
 	assertFloats(t, []float64{5, 7}, getPricesWithNoErr(t, cache, "p1", "p2"), "wrong price returned")
 	assertFloats(t, []float64{5, 7}, getPricesWithNoErr(t, cache, "p1", "p2"), "wrong price returned")
 	assertInt(t, 2, mockService.getNumCalls(), "wrong number of service calls")
@@ -165,6 +174,26 @@ func TestGetPricesFor_ParallelizeCalls(t *testing.T) {
 	cache := NewTransparentCache(mockService, time.Minute)
 	start := time.Now()
 	assertFloats(t, []float64{5, 7}, getPricesWithNoErr(t, cache, "p1", "p2"), "wrong price returned")
+	elapsedTime := time.Since(start)
+	if elapsedTime > (1200 * time.Millisecond) {
+		t.Error("calls took too long, expected them to take a bit over one second")
+	}
+}
+
+// Check error on parallelize calls
+func TestGetPricesFor_ErrorParallelizeCalls(t *testing.T) {
+	var err = fmt.Errorf("Not Working \n")
+	mockService := &mockPriceService{
+		callDelay: time.Second, // each call to external service takes one full second
+		mockResults: map[string]mockResult{
+			"p0": {price: 2, err: nil},
+			"p1": {price: 5, err: err},
+			"p2": {price: 7, err: nil},
+		},
+	}
+	cache := NewTransparentCache(mockService, time.Minute)
+	start := time.Now()
+	assertFloats(t, []float64{2, 7}, getPricesWithErr(t, cache, "p0", "p1", "p2"), "wrong price returned")
 	elapsedTime := time.Since(start)
 	if elapsedTime > (1200 * time.Millisecond) {
 		t.Error("calls took too long, expected them to take a bit over one second")
