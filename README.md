@@ -58,7 +58,7 @@ go test -v
 The command above will print all the results of every test in the tests case
 
 
-### Installing and Deploying Example Server App (Ubuntu)
+## Installing and Deploying Example Server App (Ubuntu)
 
 In root folder directory is a file named as "script.sh" that is intended to run in Ubuntu machine. This script will set up everything that server app needs. 
 For running the script, first it's needed to set the script as executable, hence open a terminal and runs the command 
@@ -72,8 +72,6 @@ sudo ./script.sh
 ```
 finally, wait for the script finishes and voilá! the server app will be running on port 8080 (make sure you have this port 
 available)
-
-
 
 ##Installation and Deploying Example Server App (NO Ubuntu dist)
 
