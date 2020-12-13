@@ -8,16 +8,11 @@ import (
 
 // Search: interface with privates methods to improve calls to PriceService
 type Search interface {
-
-	//Makes synchronization for pushing prices to the result list
-	syncPrice()
-
 	//Makes synchronization between all threads built for searching prices
-	syncSearch(group *sync.WaitGroup, it string, r *[]float64, e *error)
+	syncSearch( code string)
 
 	//Sets the parallel search
 	parallelizeSearch( itemCodes *[]string, results *[]float64, e *error)
-
 }
 
 // PriceService is a service that we can use to get prices for the items
@@ -36,36 +31,29 @@ type TransparentCache struct {
 	priceChannel		chan float64
 }
 
-func (c *TransparentCache) syncPrice(wg *sync.WaitGroup, results *[]float64, len int) {
-	var i = 0
-	for i < len {
-		select {
-		case price := <- c.priceChannel:
-			*results = append(*results, price)
-			wg.Done()
-		}
-	}
-}
-
 func (c *TransparentCache) parallelizeSearch( itemCodes *[]string, results *[]float64, e *error) {
-	var waitGroup = sync.WaitGroup{}
-	waitGroup.Add(len(*itemCodes))
+	c.priceChannel = make(chan float64)
+	var i = 0
+	var price float64
+	var qtyProcess = len(*itemCodes)
 
 	for _, itemCode := range *itemCodes {
-
-		go c.syncSearch(itemCode, results, e)
+		go c.syncSearch(itemCode)
 	}
-	c.syncPrice(&waitGroup, results, len(*itemCodes))
-	waitGroup.Wait()
+	for i < qtyProcess{
+		select {
+		case price = <-c.priceChannel:
+			*results = append(*results, price)
+			i++
+		}
+	}
+	close(c.priceChannel)
 }
 
-func (c *TransparentCache) syncSearch(it string, r *[]float64, e *error) {
-	price, _err := c.GetPriceFor(it)
-	if _err != nil {
-		*e = _err
-	}
-	c.priceChannel <- price
+func (c *TransparentCache) syncSearch( code string) {
+	price, _ := c.GetPriceFor(code)
 
+	c.priceChannel <- price
 }
 
 
