@@ -29,7 +29,7 @@ type PriceService interface {
 type TransparentCache struct {
 	actualPriceService PriceService
 	maxAge             time.Duration
-	prices             map[string]float64
+	prices             sync.Map
 }
 
 func (c *TransparentCache) parallelizeSearch( itemCodes *[]string, results *[]float64, e *error) {
@@ -57,23 +57,23 @@ func NewTransparentCache(actualPriceService PriceService, maxAge time.Duration) 
 	return &TransparentCache{
 		actualPriceService: actualPriceService,
 		maxAge:             maxAge,
-		prices:             map[string]float64{},
+		prices:             sync.Map{},
 	}
 }
 
 // GetPriceFor gets the price for the item, either from the cache or the actual service if it was not cached or too old
 func (c *TransparentCache) GetPriceFor(itemCode string) (float64, error) {
-	price, ok := c.prices[itemCode]
+	price, ok := c.prices.Load(itemCode)
 	if ok {
 		// TODO: check that the price was retrieved less than "maxAge" ago!
-		return price, nil
+		return (price).(float64), nil
 	}
 	price, err := c.actualPriceService.GetPriceFor(itemCode)
 	if err != nil {
 		return 0, fmt.Errorf("getting price from service : %v", err.Error())
 	}
-	c.prices[itemCode] = price
-	return price, nil
+	c.prices.Store(itemCode, price)
+	return (price).(float64), nil
 }
 
 // GetPricesFor gets the prices for several items at once, some might be found in the cache, others might not
