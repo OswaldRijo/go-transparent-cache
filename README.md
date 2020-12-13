@@ -1,38 +1,78 @@
-# Golang-Challenge Result
-Challenge test
+# Golang Challenge Cache
+Project that implements a transparent cache using concurrency/parallelism
 
-We ask that you complete the following challenge to evaluate your development skills.
+## Getting started 
 
-## The Challenge
-Finish the implementation of the provided Transparent Cache package.
+The directory is as follows:
 
-## Show your work
+    .
+    ├── controller                      # Part of example server
+        └── controller.go               # Part of example server
+    ├── pkg                             
+        ├── cache.go                    # Solution
+        └── cache_test.go               # Solution's tests
+    ├── response                        # Part of example server
+        └── builder.go
+    ├── server                          # Part of example server
+        └── router.go
+    ├── service                         # Part of example server
+        └──price.go
+    ├── view                            # Part of example server
+        ├── serializer.go
+        └── view.go
+    ├── Server.postman_collection.json  # Part of example server
+    ├── Dockerfile                      # Part of example server
+    ├── .gitignore
+    ├── main.go                         # Part of example server
+    ├── README.md 
+    └── script.sh                       # Installation Script
 
-1.  Create a **Private** repository and share it with the recruiter ( please dont make a pull request, clone the private repository and create a new private one on your profile)
-2.  Commit each step of your process so we can follow your thought process.
-3.  Give your interviewer access to the private repo
+As you may see, the solution is located in pkg directory and there is a server app developed to implement the solution 
+as an example. 
 
-## What to build
-Take a look at the current TransparentCache implementation.
+The solution presented here was developed in golang and has involved concepts such as concurrency and parallelism to 
+optimize some expensive process in matter of time. As an example, I decide to build a pretty simple server just to show you
+how the cache developed will behave, and why did I decide that? just for fun! why not right? :D
 
-You'll see some "TODO" items in the project for features that are still missing.
+Further in the text, is explained how to run the tests case and how to deploy the example app to see the cache library in action 
 
-The solution can be implemented either in Golang or Java ( but you must be able to read code in Golang to realize the exercise ) 
 
-Also, you'll see that some of the provided tests are failing because of that.
+### Pre-requisites
 
-The following is expected for solving the challenge:
-* Design and implement the missing features in the cache
-* Make the failing tests pass, trying to make none (or minimal) changes to them
-* Add more tests if needed to show that your implementation really works
- 
-## Deliverables we expect:
-* Your code in a private Github repo
-* README file with the decisions taken and important notes
+You will need Golang be installed, and for best experience upper 1.5 version, 
+because in previous versions the default value for GOMAXPROCS is set to 1, which means that by default "go routines" will 
+be concurrent and not parallel.
 
-## Time Spent
-We suggest not to spend more than 2 hours total, which can be done over the course of 2 days.  Please make commits as often as possible so we can see the time you spent and please do not make one commit.  We will evaluate the code and time spent.
- 
-What we want to see is how well you handle yourself given the time you spend on the problem, how you think, and how you prioritize when time is insufficient to solve everything.
 
-Please email your solution as soon as you have completed the challenge or the time is up.
+## Run the solution Tests⚙️
+Open a terminal and navigate to the pkg folder with command:
+```
+cd pkg
+```
+After that, run in the terminal:
+```
+go test -v
+```
+
+The command above will print all the results of every test in the tests case
+
+
+### Installing and Deploying Example Server App 
+In root folder directory is a file named as "script.sh". This script will set up everything that server app needs. 
+For running the script, first it's needed to set the script as executable, hence open a terminal and runs the command 
+in project root folder.
+```
+sudo chmod +x ./script.sh
+```
+then to execute the installation script run the following command:
+```
+sudo ./script.sh
+```
+finally, wait for the script finishes and voilá! the server app will be running on port 8080 (make sure you have this port 
+available) :D
+
+Import "Server.postman_collection.json" file in postman to get ready and start to make requests to the server. 
+
+## Third party
+
+* [Mux](https://github.com/gorilla/mux/) - Library to build http servers

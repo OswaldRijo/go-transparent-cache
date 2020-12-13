@@ -1,0 +1,63 @@
+{
+	"info": {
+		"_postman_id": "c74e7fee-0fd3-427b-a052-5b9ba5123923",
+		"name": "Example Server App",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get price by item code",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v1/price/item/p3",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"price",
+						"item",
+						"p3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search items price by code",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"item_codes\" : [\n        \"p1\",\n        \"p2\",\n        \"p3\",\n        \"p4\",\n        \"p5\"\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/price/items/search",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"price",
+						"items",
+						"search"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
