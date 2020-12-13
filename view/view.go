@@ -23,12 +23,12 @@ func Get(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		fmt.Printf("error getting user : %v \n", err)
-		errMessage:= response.Message{StatusCode: 400, Status: "REQUEST PROCESSED WITH ERROR", Content: price}
+		errMessage:= response.Message{StatusCode: http.StatusBadRequest, Status: response.StatusError, Content: price}
 		response.SetErrorResponse(&errMessage, w)
 		return
 	}
 
-	message:= response.Message{StatusCode: 200, Status: "REQUEST PROCESSED OK", Content: serializePrice(itemCode, price)}
+	message:= response.Message{StatusCode: http.StatusOK, Status: response.RequestSuccessfully, Content: serializePrice(itemCode, price)}
 	response.SetOkResponse(&message, w)
 
 }
@@ -40,11 +40,11 @@ func GetMany(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		fmt.Printf("error getting user : %v \n", err)
-		errMessage:= response.Message{StatusCode: 400, Status: "REQUEST PROCESSED WITH ERROR", Content: ""}
+		errMessage:= response.Message{StatusCode: http.StatusBadRequest, Status: response.StatusError, Content: ""}
 		response.SetErrorResponse(&errMessage, w)
 		return
 	}
-	message:= response.Message{StatusCode: 200, Status: "REQUEST PROCESSED OK",
+	message:= response.Message{StatusCode: http.StatusOK, Status: response.RequestSuccessfully,
 		Content: serializePrices(bodyPrices.ItemCodes, prices)}
 
 	response.SetOkResponse(&message, w)

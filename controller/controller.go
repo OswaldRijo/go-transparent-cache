@@ -1,16 +1,20 @@
 package controller
 
-import(
+import (
 	cache "Golang-challenge/pkg"
 	"Golang-challenge/service"
 	"time"
 )
-var cacheInstance = cache.NewTransparentCache(service.NewPriceService(), time.Minute)
+var cacheInstance *cache.TransparentCache
+
 type Controller struct {
 
 }
 
 func NewController() *Controller {
+	if cacheInstance == nil {
+		cacheInstance = cache.NewTransparentCache(service.NewPriceService(), time.Minute)
+	}
 	return &Controller{}
 }
 

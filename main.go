@@ -1,16 +1,15 @@
 package main
 
 import (
+	"Golang-challenge/server"
 	"fmt"
 	"log"
 	"net/http"
-	"Golang-challenge/server"
 )
 
 func main()  {
-
-	fmt.Printf("Starting server on 8080... \n")
 	s := server.New()
+	fmt.Printf("Server started on 8080... \n")
 	log.Fatal(http.ListenAndServe(":8080", s.Router()))
 
 }
