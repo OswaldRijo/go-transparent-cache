@@ -71,7 +71,7 @@ sudo ./script.sh
 finally, wait for the script finishes and voilá! the server app will be running on port 8080 (make sure you have this port 
 available)
 
-#Installation and Deploying Example Server App (NO Ubuntu dist)
+##Installation and Deploying Example Server App (NO Ubuntu dist)
 The "main.go" file located in root directory is in charge of starting the server, the next command will build the app, so
 open a terminal and execute:
 ```
