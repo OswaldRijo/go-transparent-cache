@@ -6,6 +6,16 @@ import (
 	"fmt"
 )
 
+
+//PriceAndTime is a struct with private attributes, needed to relate:
+// Price
+// Date that was cached the price
+// Err in case of
+type Price struct {
+	price float64
+	err error
+}
+
 // Search: interface with privates methods to improve calls to PriceService
 type Search interface {
 	//Makes synchronization between all threads built for searching prices
@@ -28,13 +38,13 @@ type TransparentCache struct {
 	actualPriceService PriceService
 	maxAge             time.Duration
 	prices             sync.Map
-	priceChannel		chan float64
+	priceChannel		chan Price
 }
 
 func (c *TransparentCache) parallelizeSearch( itemCodes *[]string, results *[]float64, e *error) {
-	c.priceChannel = make(chan float64)
+	c.priceChannel = make(chan Price)
 	var i = 0
-	var price float64
+	var priceStr Price
 	var qtyProcess = len(*itemCodes)
 
 	for _, itemCode := range *itemCodes {
@@ -42,8 +52,8 @@ func (c *TransparentCache) parallelizeSearch( itemCodes *[]string, results *[]fl
 	}
 	for i < qtyProcess{
 		select {
-		case price = <-c.priceChannel:
-			*results = append(*results, price)
+		case priceStr = <-c.priceChannel:
+			*results = append(*results, priceStr.price)
 			i++
 		}
 	}
@@ -51,9 +61,12 @@ func (c *TransparentCache) parallelizeSearch( itemCodes *[]string, results *[]fl
 }
 
 func (c *TransparentCache) syncSearch( code string) {
-	price, _ := c.GetPriceFor(code)
-
-	c.priceChannel <- price
+	price, err := c.GetPriceFor(code)
+	if err != nil {
+		c.priceChannel <- Price{0,err}
+	}else{
+		c.priceChannel <- Price{price,nil}
+	}
 }
 
 
@@ -67,17 +80,17 @@ func NewTransparentCache(actualPriceService PriceService, maxAge time.Duration) 
 
 // GetPriceFor gets the price for the item, either from the cache or the actual service if it was not cached or too old
 func (c *TransparentCache) GetPriceFor(itemCode string) (float64, error) {
-	price, ok := c.prices.Load(itemCode)
+	priceAndTime, ok := c.prices.Load(itemCode)
 	if ok {
 		// TODO: check that the price was retrieved less than "maxAge" ago!
-		return (price).(float64), nil
+		return (priceAndTime).(Price).price, nil
 	}
 	price, err := c.actualPriceService.GetPriceFor(itemCode)
 	if err != nil {
 		return 0, fmt.Errorf("getting price from service : %v", err.Error())
 	}
-	c.prices.Store(itemCode, price)
-	return (price).(float64), nil
+	c.prices.Store(itemCode, Price{price, nil})
+	return price, nil
 }
 
 // GetPricesFor gets the prices for several items at once, some might be found in the cache, others might not
