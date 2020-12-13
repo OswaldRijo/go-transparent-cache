@@ -74,7 +74,7 @@ finally, wait for the script finishes and voilá! the server app will be running
 available).
 
 
-##Installation and Deploying Example Server App (NO Ubuntu dist)
+## Installation and Deploying Example Server App (NO Ubuntu dist)
 
 The "main.go" file located in root directory is in charge of starting the server, the next command will build the app, so
 open a terminal and execute:
@@ -90,7 +90,7 @@ After that, execute the file that the command above generates in root directory 
 and that's it!.
 
 
-##Collection to make Requests to the server
+## Collection to make Requests to the server
 
 Import "Server.postman_collection.json" file in postman to get ready and start to make requests to the server.
 
