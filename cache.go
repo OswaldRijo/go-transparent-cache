@@ -8,11 +8,12 @@ import (
 
 
 //PriceAndTime is a struct with private attributes, needed to relate:
-// Price
+// price
 // Date that was cached the price
 // Err in case of
-type Price struct {
+type PriceAndTime struct {
 	price float64
+	createdAt *time.Time
 	err error
 }
 
@@ -38,13 +39,15 @@ type TransparentCache struct {
 	actualPriceService PriceService
 	maxAge             time.Duration
 	prices             sync.Map
-	priceChannel		chan Price
+	priceChannel		chan PriceAndTime
 }
 
 func (c *TransparentCache) parallelizeSearch( itemCodes *[]string, results *[]float64, e *error) {
-	c.priceChannel = make(chan Price)
+	c.priceChannel = make(chan PriceAndTime)
+	defer close(c.priceChannel)
+
 	var i = 0
-	var priceStr Price
+	var priceStr PriceAndTime
 	var qtyProcess = len(*itemCodes)
 
 	for _, itemCode := range *itemCodes {
@@ -57,15 +60,14 @@ func (c *TransparentCache) parallelizeSearch( itemCodes *[]string, results *[]fl
 			i++
 		}
 	}
-	close(c.priceChannel)
 }
 
 func (c *TransparentCache) syncSearch( code string) {
 	price, err := c.GetPriceFor(code)
 	if err != nil {
-		c.priceChannel <- Price{0,err}
+		c.priceChannel <- PriceAndTime{0,nil,err}
 	}else{
-		c.priceChannel <- Price{price,nil}
+		c.priceChannel <- PriceAndTime{price,nil,nil}
 	}
 }
 
@@ -82,14 +84,17 @@ func NewTransparentCache(actualPriceService PriceService, maxAge time.Duration) 
 func (c *TransparentCache) GetPriceFor(itemCode string) (float64, error) {
 	priceAndTime, ok := c.prices.Load(itemCode)
 	if ok {
-		// TODO: check that the price was retrieved less than "maxAge" ago!
-		return (priceAndTime).(Price).price, nil
+		if time.Since(*(priceAndTime).(PriceAndTime).createdAt) <= c.maxAge {
+			return (priceAndTime).(PriceAndTime).price, nil
+		}
 	}
 	price, err := c.actualPriceService.GetPriceFor(itemCode)
 	if err != nil {
 		return 0, fmt.Errorf("getting price from service : %v", err.Error())
 	}
-	c.prices.Store(itemCode, Price{price, nil})
+	var now = time.Now()
+
+	c.prices.Store(itemCode, PriceAndTime{price, &now, nil})
 	return price, nil
 }
 
