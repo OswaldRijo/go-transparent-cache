@@ -33,11 +33,23 @@ type TransparentCache struct {
 }
 
 func (c *TransparentCache) parallelizeSearch( itemCodes *[]string, results *[]float64, e *error) {
+	var waitGroup = sync.WaitGroup{}
+	waitGroup.Add(len(*itemCodes))
 
+	for _, itemCode := range *itemCodes {
+
+		go c.syncSearch(&waitGroup, itemCode, results, e)
+	}
+	waitGroup.Wait()
 }
 
 func (c *TransparentCache) syncSearch(group *sync.WaitGroup, it string, r *[]float64, e *error) {
-
+	price, _err := c.GetPriceFor(it)
+	if _err != nil {
+		*e = _err
+	}
+	*r = append(*r, price)
+	group.Done()
 }
 
 
