@@ -1,9 +1,21 @@
 package sample1
 
 import (
+	"sync"
 	"time"
 	"fmt"
 )
+
+// Search: interface with privates methods to improve calls to PriceService
+type Search interface {
+
+	//Makes synchronization between all threads built for searching prices
+	syncSearch(group *sync.WaitGroup, it string, r *[]float64, e *error)
+
+	//Sets the parallel search
+	parallelizeSearch( itemCodes *[]string, results *[]float64, e *error)
+
+}
 
 // PriceService is a service that we can use to get prices for the items
 // Calls to this service are expensive (they take time)
@@ -19,6 +31,15 @@ type TransparentCache struct {
 	maxAge             time.Duration
 	prices             map[string]float64
 }
+
+func (c *TransparentCache) parallelizeSearch( itemCodes *[]string, results *[]float64, e *error) {
+
+}
+
+func (c *TransparentCache) syncSearch(group *sync.WaitGroup, it string, r *[]float64, e *error) {
+
+}
+
 
 func NewTransparentCache(actualPriceService PriceService, maxAge time.Duration) *TransparentCache {
 	return &TransparentCache{
@@ -46,14 +67,9 @@ func (c *TransparentCache) GetPriceFor(itemCode string) (float64, error) {
 // GetPricesFor gets the prices for several items at once, some might be found in the cache, others might not
 // If any of the operations returns an error, it should return an error as well
 func (c *TransparentCache) GetPricesFor(itemCodes ...string) ([]float64, error) {
-	results := []float64{}
-	for _, itemCode := range itemCodes {
-		// TODO: parallelize this, it can be optimized to not make the calls to the external service sequentially
-		price, err := c.GetPriceFor(itemCode)
-		if err != nil {
-			return []float64{}, err
-		}
-		results = append(results, price)
-	}
-	return results, nil
+	results := &[]float64{}
+	var err error
+	c.parallelizeSearch(&itemCodes, results, &err)
+
+	return *results, err
 }
