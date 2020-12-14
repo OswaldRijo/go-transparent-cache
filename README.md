@@ -50,7 +50,7 @@ Further in the text, is explained how to run the tests case and how to deploy th
 
 ### Pre-requisites
 
-You will need Golang be installed, and for best experience upper 1.5 version, 
+You will need Golang be installed, and for the best experience you should have 1.5 version or later, 
 because in previous versions the default value for GOMAXPROCS is set to 1, which means that by default goroutines will 
 be concurrent and not parallel.
 
