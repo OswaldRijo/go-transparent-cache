@@ -1,6 +1,17 @@
 # Golang Challenge Cache
 Project that implements a transparent cache using concurrency/parallelism
 
+## Decisions
+
+
+* Change the data type of attribute "price" for sync.Map, this way the problem caused by race condition will be solved
+* Added a struct called as "PriceAndTime" which inside is composed by "price", "createdAt" to keep updated the time when
+  the price was cached updated and "err" to know if an error has occurred.
+* Work with channels to synchronize goroutines at the moment to add price to the results list.
+* Add a test to check when service returns an error whe request an updated price
+* Set up a server that use the solution to appreciate its functionality.
+
+
 ## Getting started 
 
 The directory is as follows:
@@ -40,7 +51,7 @@ Further in the text, is explained how to run the tests case and how to deploy th
 ### Pre-requisites
 
 You will need Golang be installed, and for best experience upper 1.5 version, 
-because in previous versions the default value for GOMAXPROCS is set to 1, which means that by default "go routines" will 
+because in previous versions the default value for GOMAXPROCS is set to 1, which means that by default goroutines will 
 be concurrent and not parallel.
 
 
