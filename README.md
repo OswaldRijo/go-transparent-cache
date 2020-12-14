@@ -4,11 +4,11 @@ Project that implements a transparent cache using concurrency/parallelism
 ## Decisions
 
 
-* Change the data type of attribute "price" for sync.Map, this way the problem caused by race condition was solved
-* Added a struct called as "PriceAndTime" which inside is composed by "price", "createdAt" to keep updated the time when
-  the price was cached updated and "err" to know if an error has occurred.
-* Work with channels to synchronize goroutines at the moment to add price to the results list.
-* Add a test to check when service returns an error whe request an updated price
+* Changed the data type of attribute "price" for sync.Map, this way the problem caused by race condition was solved
+* Added a struct called "PriceAndTime" which inside is composed by "price", "createdAt" to keep updated the time when
+  the price was cached and "err" to know if an error has occurred.
+* Worked with channels to synchronize goroutines at the moment to add price to the results list.
+* Added a test to check when service returns an error whe request an updated price
 * Set up a server that use the solution to appreciate its functionality.
 
 
