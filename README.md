@@ -8,7 +8,7 @@ Project that implements a transparent cache using concurrency/parallelism
 * Added a struct called "PriceAndTime" which inside is composed by "price", "createdAt" to keep updated the time when
   the price was cached and "err" to know if an error has occurred.
 * Worked with channels to synchronize goroutines at the moment to add price to the results list.
-* Added a test to check when service returns an error whe request an updated price
+* Added a test to check when service returns an error at the moment to update price
 * Set up a server that implements the solution to appreciate its functionality.
 
 
