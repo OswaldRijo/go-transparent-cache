@@ -85,7 +85,7 @@ finally, wait for the script finishes and voilá! the server app will be running
 available).
 
 
-## Installation and Deploying Example Server App (NO Ubuntu dist)
+## Installation and Deploying Example Server App (Mac dist)
 
 The "main.go" file located in root directory is in charge of starting the server, the next command will build the app, so
 open a terminal and execute:
